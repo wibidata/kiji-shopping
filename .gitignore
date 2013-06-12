@@ -1,0 +1,9 @@
+# Editor temp files.
+*~
+
+# IDE temp files
+.jde/
+prj.el
+
+# Build artifacts.
+target/

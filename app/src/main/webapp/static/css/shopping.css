@@ -1,0 +1,101 @@
+.account-info {
+  float: right;
+  line-height: 30px;
+}
+
+.logo-prefix {
+  padding-left: 0px;
+  color: #38739D;
+}
+
+.logo-prefix a {
+  color: #38739D;
+  text-decoration: none;
+  padding-left: 35px;
+  margin-left: -35px;
+}
+
+.food-background {
+  background-image: url(/static/img/closet1.JPG);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+}
+
+.food-background .well {
+  width: 80%;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.dish {
+  cursor: pointer;
+  min-height: 200px;
+  margin-bottom: 20px;
+}
+
+.dish .description {
+  height: 200px;
+  overflow: hidden;
+}
+
+.dish h4 {
+  min-height: 4em;
+}
+
+.dish .thumbnail {
+  margin: 0 -30px 5px 5px;
+  background: #fff;
+}
+
+.dish-large {
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+}
+
+.dish-large .well {
+  opacity: 0.9;
+}
+
+.hero-unit h1 {
+  margin-bottom: 10px;
+}
+
+.dish-large .thumbnail {
+  margin-right: 20px;
+}
+
+.dish-large .ingredients {
+  margin-left: 20px;
+  font-size: 120%;
+}
+
+.dish-large .ingredients h4 {
+  font-size: 120%;
+}
+
+.dish-large .ingredients li {
+  margin: 5px;
+}
+
+.account-bar {
+  margin: 5px;
+  text-align: right;
+}
+
+.cuisine-name {
+  text-transform: capitalize
+}
+
+.yum {
+  color: green;
+}
+
+.meh {
+  color: gray;
+}
+
+.blech {
+  color: red;
+}

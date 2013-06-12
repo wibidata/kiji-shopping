@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ (c) Copyright 2013 WibiData, Inc.
+
+ See the NOTICE file distributed with this work for additional
+ information regarding copyright ownership.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name>My Wibi App</display-name>
+
+  <servlet>
+    <servlet-name>HomePage</servlet-name>
+    <servlet-class>com.wibidata.shopping.servlet.HomePageServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Product</servlet-name>
+    <servlet-class>com.wibidata.shopping.servlet.ProductServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>CreateUser</servlet-name>
+    <servlet-class>com.wibidata.shopping.servlet.CreateUserServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SignIn</servlet-name>
+    <servlet-class>com.wibidata.shopping.servlet.SignInServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SignOut</servlet-name>
+    <servlet-class>com.wibidata.shopping.servlet.SignOutServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/bootstrap/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/static/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HomePage</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Product</servlet-name>
+    <url-pattern>/product</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>CreateUser</servlet-name>
+    <url-pattern>/createuser</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SignIn</servlet-name>
+    <url-pattern>/signin</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SignOut</servlet-name>
+    <url-pattern>/signout</url-pattern>
+  </servlet-mapping>
+
+  <listener>
+    <listener-class>com.wibidata.shopping.KijiContextListener</listener-class>
+  </listener>
+</web-app>

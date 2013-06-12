@@ -1,0 +1,72 @@
+@namespace("com.wibidata.shopping.avro")
+
+protocol Types {
+  /** A user in our application. */
+  record User {
+    /** A user name */
+    string name;
+
+    /** An email address. */
+    string email;
+  }
+
+  /** A list of relevant words from a product description. */
+  record DescriptionWords {
+    /** The words. */
+    array<string> words;
+  }
+
+  record TermFrequency {
+    string word;
+    int count;
+    double tf_idf = 0.0;
+  }
+
+  /** A list of relevant words from a product description. */
+  record TermFrequencies {
+    /** The words. */
+    array<TermFrequency> frequencies;
+  }
+
+  /** Stores the information about when a user rates a product. */
+  record ProductRating {
+    /** The id of the product that was rated. */
+    string product_id;
+
+    /** The name of the product that was rated. */
+    string product_name;
+
+    /** The value of the rating (-1, 0, or +1). */
+    int value;
+  }
+
+  /** A description word a user likes. */
+  record FavoriteWord {
+    /** The word. */
+    string word;
+
+    /** The weight of the favorite word (how much the user likes it). */
+    double weight;
+  }
+
+  /** A user's favorite words. */
+  record FavoriteWords {
+    /** The favorite words. */
+    array<FavoriteWord> words;
+  }
+
+  /** A recommended product. */
+  record ProductRecommendation {
+    /** The id of the recommended product. */
+    string id;
+
+    /** How much the algorithm thinks the user will like it. */
+    double weight;
+  }
+
+  /** Recommended products for a user. */
+  record ProductRecommendations {
+    /** The list of recommended products, sorted by decreasing weight. */
+    array<ProductRecommendation> recommendations;
+  }
+}
