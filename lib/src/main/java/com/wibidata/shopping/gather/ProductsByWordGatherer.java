@@ -21,6 +21,8 @@ package com.wibidata.shopping.gather;
 
 import java.io.IOException;
 
+import org.kiji.mapreduce.lib.avro.Edge;
+import org.kiji.mapreduce.lib.graph.EdgeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,15 +69,17 @@ public class ProductsByWordGatherer extends LabelNodeGatherer {
 
     TermFrequencies words = input.getMostRecentValue("info", "term_frequencies");
     for (TermFrequency word : words.getFrequencies()) {
-      NodeBuilder node = new NodeBuilder("word:" + word.getWord());
-      NodeBuilder target = node.addEdge()
-        .setWeight(word.getTfIdf())
-        .target(input.getMostRecentValue("info", "id").toString())
-          .addAnnotation("name", input.getMostRecentValue("info", "name").toString())
-          .addAnnotation("description", input.getMostRecentValue("info", "description").toString())
-          .addAnnotation("price", input.getMostRecentValue("info", "price").toString())
-          .addAnnotation("inventory", input.getMostRecentValue("info", "inventory").toString())
-          .addAnnotation("thumbnail", input.getMostRecentValue("info", "thumbnail").toString());
+      NodeBuilder node = new NodeBuilder().setLabel("word:" + word.getWord());
+      NodeBuilder target = node.addEdge(new EdgeBuilder()
+          .setWeight(word.getTfIdf())
+          .setTarget(new NodeBuilder().setLabel(input.getMostRecentValue("info", "id").toString())
+              .addAnnotation("name", input.getMostRecentValue("info", "name").toString())
+              .addAnnotation("description", input.getMostRecentValue("info", "description").toString())
+              .addAnnotation("price", input.getMostRecentValue("info", "price").toString())
+              .addAnnotation("inventory", input.getMostRecentValue("info", "inventory").toString())
+              .addAnnotation("thumbnail", input.getMostRecentValue("info", "thumbnail").toString())
+              .build())
+          .build());
       if (input.containsColumn("info", "category")) {
         target.addAnnotation("category", input.getMostRecentValue("info", "category").toString());
       }

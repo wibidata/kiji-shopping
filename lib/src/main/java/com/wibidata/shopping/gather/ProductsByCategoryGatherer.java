@@ -29,9 +29,12 @@ import org.apache.hadoop.util.ToolRunner;
 import org.kiji.mapreduce.KijiMapReduceJob;
 import org.kiji.mapreduce.gather.GathererContext;
 import org.kiji.mapreduce.gather.KijiGatherJobBuilder;
+import org.kiji.mapreduce.lib.avro.Edge;
 import org.kiji.mapreduce.lib.gather.LabelNodeGatherer;
+import org.kiji.mapreduce.lib.graph.EdgeBuilder;
 import org.kiji.mapreduce.lib.graph.NodeBuilder;
 import org.kiji.mapreduce.output.AvroKeyValueMapReduceJobOutput;
+import org.kiji.mapreduce.output.MapReduceJobOutputs;
 import org.kiji.schema.Kiji;
 import org.kiji.schema.KijiDataRequest;
 import org.kiji.schema.KijiDataRequestBuilder;
@@ -77,13 +80,17 @@ public class ProductsByCategoryGatherer extends LabelNodeGatherer implements Too
       return;
     }
 
-    NodeBuilder node = new NodeBuilder("category:" + input.getMostRecentValue("info", "category").toString());
-    node.addEdge().target(input.getMostRecentValue("info", "id").toString())
-        .addAnnotation("name", input.getMostRecentValue("info", "name").toString())
-        .addAnnotation("description_short", input.getMostRecentValue("info", "description_short").toString())
-        .addAnnotation("inventory", input.getMostRecentValue("info", "inventory").toString())
-        .addAnnotation("price", input.getMostRecentValue("info", "price").toString())
-        .addAnnotation("thumbnail", input.getMostRecentValue("info", "thumbnail").toString());
+    NodeBuilder node = new NodeBuilder()
+        .setLabel("category:" + input.getMostRecentValue("info", "category").toString());
+    node.addEdge(new EdgeBuilder().setTarget(
+        new NodeBuilder().setLabel(input.getMostRecentValue("info", "id").toString())
+            .addAnnotation("name", input.getMostRecentValue("info", "name").toString())
+            .addAnnotation("description_short", input.getMostRecentValue("info", "description_short").toString())
+            .addAnnotation("inventory", input.getMostRecentValue("info", "inventory").toString())
+            .addAnnotation("price", input.getMostRecentValue("info", "price").toString())
+            .addAnnotation("thumbnail", input.getMostRecentValue("info", "thumbnail").toString())
+            .build())
+        .build());
 
     write(node.build(), context);
   }
@@ -100,7 +107,7 @@ public class ProductsByCategoryGatherer extends LabelNodeGatherer implements Too
           .withInputTable(productTable.getURI())
           .withGatherer(ProductsByCategoryGatherer.class)
           .withReducer(KeepAnnotationsMergeNodeReducer.class)
-          .withOutput(new AvroKeyValueMapReduceJobOutput(
+          .withOutput(MapReduceJobOutputs.newAvroKeyMapReduceJobOutput(
               new Path(categoryTable.getName() + "-related-product"), 1))
           .build();
       return job.run() ? 1 : 0;

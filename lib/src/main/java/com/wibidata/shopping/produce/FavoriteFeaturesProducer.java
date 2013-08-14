@@ -29,6 +29,8 @@ import java.util.TreeSet;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HConstants;
+import org.kiji.mapreduce.lib.graph.EdgeBuilder;
+import org.kiji.schema.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +43,6 @@ import org.kiji.mapreduce.lib.graph.NodeBuilder;
 import org.kiji.mapreduce.lib.graph.NodeUtils;
 import org.kiji.mapreduce.produce.KijiProducer;
 import org.kiji.mapreduce.produce.ProducerContext;
-import org.kiji.schema.EntityId;
-import org.kiji.schema.KijiDataRequest;
-import org.kiji.schema.KijiDataRequestBuilder;
-import org.kiji.schema.KijiRowData;
-import org.kiji.schema.KijiURI;
 
 import com.wibidata.shopping.avro.DescriptionWords;
 import com.wibidata.shopping.avro.FavoriteWord;
@@ -115,9 +112,11 @@ public class FavoriteFeaturesProducer extends KijiProducer {
           if (word.getTfIdf() < 2) {
             continue;
           }
-          NodeBuilder node = new NodeBuilder("all");
-          node.addEdge(productRating.getValue().intValue() * word.getTfIdf())
-              .setTarget(word.getWord().toString());
+          NodeBuilder node = new NodeBuilder()
+              .setLabel("all")
+              .addEdge(new EdgeBuilder()
+                  .setWeight(productRating.getValue().intValue() * word.getTfIdf())
+                  .build());
           wordNodes.add(node.build());
         }
       }
@@ -161,10 +160,9 @@ public class FavoriteFeaturesProducer extends KijiProducer {
   private List<TermFrequency> getWords(String productId, ProducerContext context)
       throws IOException, InterruptedException {
     LOG.info("Looking up words for product " + productId);
-    KeyValueStoreReader<EntityId, TermFrequencies> kvsReader =
-        context.<EntityId, TermFrequencies>getStore("words-by-product");
-    TermFrequencies words = kvsReader.get(
-        KijiTableKeyValueStore.getTableForReader(kvsReader).getEntityId(productId));
+    KeyValueStoreReader<KijiRowKeyComponents, TermFrequencies> kvsReader =
+        context.<KijiRowKeyComponents, TermFrequencies>getStore("words-by-product");
+    TermFrequencies words = kvsReader.get(KijiRowKeyComponents.fromComponents(productId));
 
     if (null == words) {
       return Collections.<TermFrequency>emptyList();

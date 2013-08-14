@@ -38,15 +38,25 @@
     <avro.version>1.7.2</avro.version>
     <commons.io.version>2.1</commons.io.version>
     <commons.lang.version>2.5</commons.lang.version>
-    <hadoop.version>2.0.0-mr1-cdh4.1.2</hadoop.version>
-    <hbase.version>0.92.1-cdh4.1.2</hbase.version>
+    <hadoop.version>2.0.0-mr1-cdh4.3.0</hadoop.version>
+    <hbase.version>0.94.6-cdh4.3.0</hbase.version>
     <jetty.version>7.6.2.v20120308</jetty.version>
     <junit.version>4.10</junit.version>
     <slf4j.version>1.6.1</slf4j.version>
+    <scala.version>2.9.2</scala.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- Scala -->
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>${scala.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
@@ -105,12 +115,12 @@
       <dependency>
         <groupId>org.kiji.framework</groupId>
         <artifactId>kiji-framework</artifactId>
-        <version>1.0.4</version>
+        <version>1.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.kiji.scoring</groupId>
         <artifactId>kiji-scoring</artifactId>
-        <version>0.2.0</version>
+        <version>0.4.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

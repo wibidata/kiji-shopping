@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.kiji.mapreduce.lib.graph.EdgeBuilder;
+import org.kiji.schema.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +39,6 @@ import org.kiji.mapreduce.lib.avro.Node;
 import org.kiji.mapreduce.lib.graph.NodeBuilder;
 import org.kiji.mapreduce.lib.produce.SumPathNaiveRecommendationProducer;
 import org.kiji.mapreduce.produce.ProducerContext;
-import org.kiji.schema.EntityId;
-import org.kiji.schema.KijiDataRequest;
-import org.kiji.schema.KijiDataRequestBuilder;
-import org.kiji.schema.KijiRowData;
-import org.kiji.schema.KijiURI;
 import org.kiji.schema.layout.KijiTableLayout;
 import org.kiji.schema.tools.ToolUtils;
 
@@ -54,7 +51,6 @@ public class ProductRecommendationsProducer extends SumPathNaiveRecommendationPr
   private static final Logger LOG = LoggerFactory.getLogger(ProductRecommendationsProducer.class);
 
   private KijiRowData mRowData;
-  private KijiTableLayout mKVStoreLayout;
 
   @Override
   public KijiDataRequest getDataRequest() {
@@ -87,7 +83,7 @@ public class ProductRecommendationsProducer extends SumPathNaiveRecommendationPr
       throws IOException {
     mRowData = input;
 
-    NodeBuilder node = new NodeBuilder("me");
+    NodeBuilder node = new NodeBuilder().setLabel("me");
     if (!input.containsColumn("personalization", "favorite_words")) {
       return node.build();
     }
@@ -95,7 +91,10 @@ public class ProductRecommendationsProducer extends SumPathNaiveRecommendationPr
     FavoriteWords favoriteWords =
         input.getMostRecentValue("personalization", "favorite_words");
     for (FavoriteWord word : favoriteWords.getWords()) {
-      node.addEdge(word.getWeight()).setTarget("word:" + word.getWord());
+      node.addEdge(new EdgeBuilder()
+          .setWeight(word.getWeight())
+          .setTarget(new NodeBuilder().setLabel("word:" + word.getWord()).build())
+          .build());
     }
     return node.build();
   }
@@ -103,7 +102,7 @@ public class ProductRecommendationsProducer extends SumPathNaiveRecommendationPr
   /**
    * Looks up an entity's related items in the association model via the KeyValue store.
    *
-   * @param entityId The entity id to look up associations (related items) for.
+   * @param entityLabel The entity id to look up associations (related items) for.
    * @param context The producer context.
    * @return The entity's node in the relationship graph. Its outgoing edges represent its
    *     direct relationships.  This will not return null; if there are no related items,
@@ -113,15 +112,15 @@ public class ProductRecommendationsProducer extends SumPathNaiveRecommendationPr
   @Override
   protected Node getRelatedItems(String entityLabel, ProducerContext context)
       throws IOException {
-    KeyValueStoreReader<EntityId, Node> associationsStore = context.getStore(ASSOCIATIONS_STORE);
+    KeyValueStoreReader<KijiRowKeyComponents, Node> associationsStore = context.getStore(ASSOCIATIONS_STORE);
     assert null != associationsStore;
 
-    EntityId eid = ToolUtils.createEntityIdFromUserInputs(entityLabel, mKVStoreLayout);
+    KijiRowKeyComponents eid = KijiRowKeyComponents.fromComponents(entityLabel);
 
     Node associations = associationsStore.get(eid);
     if (null == associations) {
       // No associations, just return an empty node.
-      return new NodeBuilder(entityLabel).build();
+      return new NodeBuilder().setLabel(entityLabel).build();
     }
     return associations;
   }
@@ -129,7 +128,6 @@ public class ProductRecommendationsProducer extends SumPathNaiveRecommendationPr
   @Override
   public void setup(KijiContext context) throws IOException {
     KeyValueStoreReader<EntityId, Node> associationsStore = context.getStore(ASSOCIATIONS_STORE);
-    mKVStoreLayout = KijiTableKeyValueStore.getTableForReader(associationsStore).getLayout();
   }
 
   @Override

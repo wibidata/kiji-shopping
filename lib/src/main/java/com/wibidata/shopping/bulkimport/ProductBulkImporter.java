@@ -24,17 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import org.kiji.mapreduce.KijiTableContext;
-import org.kiji.mapreduce.lib.bulkimport.BaseTextBulkImporter;
+import org.kiji.mapreduce.bulkimport.KijiBulkImporter;
 import org.kiji.schema.EntityId;
 
 import com.wibidata.shopping.avro.DescriptionWords;
 
-public class ProductBulkImporter extends BaseTextBulkImporter {
+public class ProductBulkImporter extends KijiBulkImporter<LongWritable, Text> {
 
   /**
    * Kiji will call this method once for each line in the input text file.
@@ -49,7 +50,8 @@ public class ProductBulkImporter extends BaseTextBulkImporter {
    * @throws IOException
    */
   @Override
-  public void produce(Text line, KijiTableContext context) throws IOException {
+  public void produce(LongWritable offset, Text line, KijiTableContext context)
+      throws IOException {
     final JsonNode json = parseJson(line.toString());
 
     // Parse the ID of the product.

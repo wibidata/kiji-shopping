@@ -34,6 +34,7 @@ import org.kiji.mapreduce.gather.KijiGatherJobBuilder;
 import org.kiji.mapreduce.gather.KijiGatherer;
 import org.kiji.mapreduce.lib.reduce.IntSumReducer;
 import org.kiji.mapreduce.output.AvroKeyValueMapReduceJobOutput;
+import org.kiji.mapreduce.output.MapReduceJobOutputs;
 import org.kiji.schema.Kiji;
 import org.kiji.schema.KijiDataRequest;
 import org.kiji.schema.KijiDataRequestBuilder;
@@ -82,7 +83,7 @@ public class DescriptionWordsDfGatherer extends KijiGatherer<Text, IntWritable> 
           .withInputTable(productTable.getURI())
           .withGatherer(DescriptionWordsDfGatherer.class)
           .withReducer(IntSumReducer.class)
-          .withOutput(new AvroKeyValueMapReduceJobOutput(new Path(args[0]), 1))
+          .withOutput(MapReduceJobOutputs.newAvroKeyValueMapReduceJobOutput(new Path(args[0]), 1))
           .build();
       return job.run() ? 0 : 1;
     } finally {
