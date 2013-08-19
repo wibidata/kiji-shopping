@@ -5,7 +5,7 @@ WITH LOCALITY GROUP default (
   MAXVERSIONS = 1,
   TTL = FOREVER,
   INMEMORY = false,
-  FAMILY related WITH DESCRIPTION 'Category and related dishes.' (
+  FAMILY related WITH DESCRIPTION 'Category and related products.' (
     product CLASS org.kiji.mapreduce.lib.avro.Node
   )
 );

@@ -3,7 +3,12 @@
 
 # IDE temp files
 .jde/
+.idea/
 prj.el
+*.iml
+.classpath
+.settings/
+.project
 
 # Build artifacts.
 target/

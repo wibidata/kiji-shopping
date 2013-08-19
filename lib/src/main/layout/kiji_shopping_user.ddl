@@ -1,5 +1,5 @@
 CREATE TABLE kiji_shopping_user WITH DESCRIPTION 'A table of KijiShopping users (accounts)'
-ROW KEY FORMAT HASHED
+ROW KEY FORMAT HASH PREFIXED(1)
 WITH
 LOCALITY GROUP default (
   MAXVERSIONS = INFINITY,
