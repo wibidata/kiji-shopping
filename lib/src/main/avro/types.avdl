@@ -69,4 +69,18 @@ protocol Types {
     /** The list of recommended products, sorted by decreasing weight. */
     array<ProductRecommendation> recommendations;
   }
+
+  record ProductInfo {
+    union { null, double } termWeight = null;
+    string category;
+    string name;
+    string description;
+    string id;
+    double price;
+    string thumbnail;
+  }
+
+  record ProductInfos {
+    array<ProductInfo> products;
+  }
 }

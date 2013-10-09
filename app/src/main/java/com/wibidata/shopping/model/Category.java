@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.wibidata.shopping.avro.ProductInfo;
+import com.wibidata.shopping.avro.ProductInfos;
 import org.apache.commons.lang.StringUtils;
 
 import org.kiji.mapreduce.avro.AvroMapReader;
@@ -36,6 +38,28 @@ public class Category {
 
   public Category() {
     mProducts = new ArrayList<Product>();
+  }
+
+  // Used when KijiExpress version of the app is run
+  public static Category fromProducts(ProductInfos productInfos) {
+    Category category = new Category();
+    for (ProductInfo prodInfo : productInfos.getProducts()) {
+      if (category.getName() == null) {
+        category.setName(prodInfo.getCategory().toString());
+      }
+
+      Product product = new Product();
+      product.setId(prodInfo.getId().toString());
+      product.setName(prodInfo.getName().toString());
+      product.setCategory(prodInfo.getCategory().toString());
+      product.setDescription(prodInfo.getDescription().toString());
+      product.setThumbnail(prodInfo.getThumbnail().toString());
+      product.setInventory(0l);
+      product.setPrice(prodInfo.getPrice());
+      category.addProduct(product);
+    }
+
+    return category;
   }
 
   public static Category fromProducts(Node node) throws MalformedURLException {

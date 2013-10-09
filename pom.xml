@@ -35,7 +35,7 @@
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
 
-    <avro.version>1.7.2</avro.version>
+    <avro.version>1.7.5</avro.version>
     <commons.io.version>2.1</commons.io.version>
     <commons.lang.version>2.5</commons.lang.version>
     <hadoop.version>2.0.0-mr1-cdh4.3.0</hadoop.version>
@@ -115,7 +115,7 @@
       <dependency>
         <groupId>org.kiji.framework</groupId>
         <artifactId>kiji-framework</artifactId>
-        <version>1.1.1</version>
+        <version>1.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.kiji.scoring</groupId>
@@ -125,7 +125,7 @@
       <dependency>
         <groupId>org.kiji.express</groupId>
         <artifactId>kiji-express</artifactId>
-        <version>0.7.0</version>
+        <version>0.9.0</version>
         <scope>provided</scope>
       </dependency>
     </dependencies>

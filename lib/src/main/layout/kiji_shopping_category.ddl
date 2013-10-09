@@ -6,6 +6,7 @@ WITH LOCALITY GROUP default (
   TTL = FOREVER,
   INMEMORY = false,
   FAMILY related WITH DESCRIPTION 'Category and related products.' (
-    product CLASS org.kiji.mapreduce.lib.avro.Node
+    product CLASS org.kiji.mapreduce.lib.avro.Node,
+    exp_product CLASS com.wibidata.shopping.avro.ProductInfos
   )
 );

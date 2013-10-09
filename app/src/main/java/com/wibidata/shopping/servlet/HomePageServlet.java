@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wibidata.shopping.avro.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.hadoop.hbase.HConstants;
@@ -49,11 +50,6 @@ import org.kiji.schema.util.ResourceUtils;
 import org.kiji.scoring.FreshKijiTableReaderBuilder;
 
 import com.wibidata.shopping.KijiContextListener;
-import com.wibidata.shopping.avro.FavoriteWord;
-import com.wibidata.shopping.avro.FavoriteWords;
-import com.wibidata.shopping.avro.ProductRating;
-import com.wibidata.shopping.avro.ProductRecommendation;
-import com.wibidata.shopping.avro.ProductRecommendations;
 import com.wibidata.shopping.model.Category;
 import com.wibidata.shopping.model.Product;
 
@@ -77,6 +73,7 @@ public class HomePageServlet extends HttpServlet {
     try {
       KijiDataRequestBuilder drBuilder = KijiDataRequest.builder();
       drBuilder.newColumnsDef().add("related", "product");
+      drBuilder.newColumnsDef().add("related", "exp_product");
       final KijiDataRequest dataRequest = drBuilder.build();
 
       final KijiScannerOptions scanOptions = new KijiScannerOptions()
@@ -86,7 +83,12 @@ public class HomePageServlet extends HttpServlet {
       scanner = reader.getScanner(dataRequest, scanOptions);
       for (KijiRowData row : scanner) {
         if (row.containsColumn("related", "product")) {
+          // For the Java version of this app
           Category category = Category.fromProducts((Node) row.getMostRecentValue("related", "product"));
+          categories.add(category);
+        } else if (row.containsColumn("related", "exp_product")) {
+          // For the KijiExpress version of this app
+          Category category = Category.fromProducts((ProductInfos) row.getMostRecentValue("related", "exp_product"));
           categories.add(category);
         }
       }
@@ -195,7 +197,7 @@ public class HomePageServlet extends HttpServlet {
    * Turns the avro ProductRecommendations type into a POJO for display.
    *
    * @param productRecommendations The avro data.
-   * @return A POJO representing the list of dishes.
+   * @return A POJO representing the list of products.
    */
   private List<Product> getProducts(KijiTable productTable, ProductRecommendations productRecommendations)
       throws IOException {

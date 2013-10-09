@@ -32,7 +32,8 @@ class ProductBulkImporterScala(args: Args) extends KijiJob(args) {
       .map('line -> ('id, 'name, 'desc, 'desc_short, 'category, 'thumb, 'thumb_xl, 'price, 'desc_words)) { parseJson }
       .map('id -> 'entityId) { id: String => EntityId(id) }
       .write(KijiOutput(args("table-uri"))
-          ('name -> "info:name",
+          ('id -> "info:id",
+           'name -> "info:name",
            'desc -> "info:description",
            'desc_short -> "info:description_short",
            'category -> "info:category",

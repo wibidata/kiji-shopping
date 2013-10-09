@@ -41,6 +41,12 @@ com.wibidata.shopping.bulkimport.ProductBulkImporterScala \
   --hdfs
 
 express job lib/target/lib-1.0.0-SNAPSHOT-jar-with-dependencies.jar \
-com.wibidata.shopping.job.DescriptionWordsTfProducerScala \
+com.wibidata.shopping.job.TfIdfJob \
   --product-table kiji://.env/shopping/kiji_shopping_product \
+  --hdfs
+
+express job lib/target/lib-1.0.0-SNAPSHOT-jar-with-dependencies.jar \
+com.wibidata.shopping.job.ProductPivotJob \
+  --product-table kiji://.env/shopping/kiji_shopping_product \
+  --category-table kiji://.env/shopping/kiji_shopping_category \
   --hdfs
