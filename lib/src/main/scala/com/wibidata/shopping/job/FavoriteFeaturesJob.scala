@@ -19,7 +19,7 @@ class FavoriteFeaturesJob(args: Args) extends KijiJob(args) {
     val (eId, slice) = tuple
     for (mapQual <- slice.groupByQualifier) yield (eId(0), mapQual._1, mapQual._2.getFirstValue)
   }
-  .filter('ratings) { rating: AvroRecord => rating("value") != 0 }
+  .filter('ratings) { rating: AvroRecord => rating("value").asInt() != 0 }
   .joinWithSmaller('productId -> 'productId, wordsByProduct)
   .flatMapTo(('userId, 'ratings, 'tfs) -> ('userId, 'word, 'weight)) { tuple: (String, AvroRecord, List[AvroRecord]) =>
     val (userId, rating, tfs) = tuple
@@ -32,5 +32,5 @@ class FavoriteFeaturesJob(args: Args) extends KijiJob(args) {
   .groupBy('userId) { _.toList[AvroRecord]('word -> 'words) }
   .packAvro(('words) -> 'favorite_words)
   .map('userId -> 'entityId) { userId: String => EntityId(userId) }
-  .write(KijiOutput(args("user-table")('favorite_words -> "personalization:favorite_words")))
+  .write(KijiOutput(args("user-table"))('favorite_words -> "personalization:favorite_words"))
 }
